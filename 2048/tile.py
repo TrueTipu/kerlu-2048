@@ -43,13 +43,14 @@ class Tile(pygame.sprite.Sprite):
     def set_animation_dir(self, dir):
         self.dir.x = dir[0]
         self.dir.y = dir[1]
-        print(self.dir)
+        #print(self.dir)
 
     def animate(self):
         self.rect.x += self.dir.x * TILE_ANIM_SPEED
         self.rect.y += self.dir.y * TILE_ANIM_SPEED
 
     def update(self, display, font):
-        self.display_num(display, font)
         if self.spawn:
             self.spawn_anim()
+        else:
+            self.display_num(display, font)

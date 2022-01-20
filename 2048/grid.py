@@ -1,5 +1,6 @@
 from tabnanny import check
 from turtle import update
+from numpy import tile
 import pygame
 from scipy import rand
 from defs import *
@@ -22,9 +23,10 @@ class Grid(pygame.sprite.Sprite):
         self.tile_data = [[0,0,0,0],
                           [0,0,0,0],
                           [0,0,0,0],
-                          [0,0,2,0]]
+                          [0,0,2,2]]
         self.set_tiles()
 
+        self.score = 0
 
         self.animation_on = False
         self.animation_count = 0
@@ -33,6 +35,9 @@ class Grid(pygame.sprite.Sprite):
         
         
         #self.test_all()
+
+    def get_score(self):
+        return self.score
 
     def test_all(self):
         for row in self.tile_poses:
@@ -50,7 +55,7 @@ class Grid(pygame.sprite.Sprite):
                         row[col_i] = 2
                         self.tiles.add(Tile((row_i, col_i),kohta[0], kohta[1], 2, True))
                     elif (cell == 3):
-                        row[col_i] = 2
+                        row[col_i] = 4
                         self.tiles.add(Tile((row_i, col_i),kohta[0], kohta[1], 4, True))
                     else:self.tiles.add(Tile((row_i, col_i),kohta[0], kohta[1], cell))
 
@@ -75,6 +80,7 @@ class Grid(pygame.sprite.Sprite):
         
     def get_input(self):
         keys = pygame.key.get_pressed()
+        if keys[pygame.K_w]: print(self.neighbors(self.tile_data[0][0],0,0))
         if keys[pygame.K_RIGHT] and self.keys_pressed[pygame.K_RIGHT] == False:
             self.keys_pressed[pygame.K_RIGHT] = True
             self.move_manager((1,0))
@@ -106,48 +112,68 @@ class Grid(pygame.sprite.Sprite):
             while target_tile != 0 and target_tile != _tile and _max != _min: #etsitään tyhjä tai sama tile
                 _max += max_dir #lisätään maksimia
                 target_tile = self.tile_data[_row if not reverse else _max][_max if not reverse else _col] #uudelleen asetetaan target
+
+            if ((_row == _max and reverse) or (_col == _max and not reverse)):
+                self.tile_data[_row][_col] = _tile
+                return _max, False
+
             if _tile == target_tile: #jos sama
                 self.tile_data[_row if not reverse else _max][_max if not reverse else _col] = _tile * 2 #asetetaan kaksinkertainen arvo
+                if _tile * 2 == 2048:
+                    self.voitto()
+                self.score += _tile * 2
                 self.create_tile_animation(_row, _col,_row if not reverse else _max,_max if not reverse else _col, max_dir*-1)
                 _max += max_dir #lisää maxia ettei kaksi yhdisty samal kerral
             else:
                 self.tile_data[_row if not reverse else _max][_max if not reverse else _col] = _tile
                 self.create_tile_animation(_row, _col,_row if not reverse else _max,_max if not reverse else _col, max_dir*-1)
-        return _max
+
+            return _max, True
+        return _max, False
             
     def move_manager(self, dir: tuple):
+        moved = False
+        moved_vali = False
         if dir[0] != 0: #horizontal
             if dir[0] == 1:
                 for row in range(0, 4, 1):
                     max = 3
                     for col in range(2, -1, -1):
                         tile = self.tile_data[row][col]
-                        max = self.check_tile(tile, row, col, max, 0, -1)
+                        max, moved_vali = self.check_tile(tile, row, col, max, 0, -1)
+                        if moved_vali:
+                            moved = True
             else:  
                 for row in range(0, 4, 1):
                     min = 0
                     for col in range(1, 4, 1):
                         tile = self.tile_data[row][col]
-                        min = self.check_tile(tile, row, col, min, 3, 1)
+                        min, moved_vali = self.check_tile(tile, row, col, min, 3, 1)
+                        if moved_vali:
+                            moved = True
         else: #vertical
             if dir[1] == 1:
                 for col in range(0, 4, 1):
                     max = 3
                     for row in range(2, -1, -1):
                         tile = self.tile_data[row][col]
-                        max = self.check_tile(tile, row, col, max, 0, -1, True)
+                        max, moved_vali = self.check_tile(tile, row, col, max, 0, -1, True)
+                        if moved_vali:
+                            moved = True
             else:
                 for col in range(0, 4, 1):
                     min = 0
                     for row in range(1, 4, 1):
                         tile = self.tile_data[row][col]
-                        min = self.check_tile(tile, row, col, min, 3, 1, True)
-                      
-        #uuden asettaminen             
-        self.set_new_tile()
+                        min,moved_vali = self.check_tile(tile, row, col, min, 3, 1, True)
+                        if moved_vali:
+                            moved = True
 
-        self.animation_on = True
-        self.animation_count = 0
+        if moved:   
+            #uuden asettaminen             
+            self.set_new_tile()
+            self.animation_on = True
+            self.animation_count = 0
     
     def set_new_tile(self):
         kohta = (random.randint(0, 3), random.randint(0, 3))
@@ -164,11 +190,14 @@ class Grid(pygame.sprite.Sprite):
             else:
                 kohta = random.choice(lista)
         if lista:
-            self.tile_data[kohta[0]][kohta[1]] = 1
+            self.tile_data[kohta[0]][kohta[1]] = random.choice((1,1,1,1,1,1,1,1,1,3))
 
     def game_over(self):
         print('Huono')
     
+    def voitto(self):
+        print('Voitit')
+
     def animate_tiles(self):
         for tile in self.tiles.sprites():
             tile.animate()
@@ -176,6 +205,15 @@ class Grid(pygame.sprite.Sprite):
         self.animation_count += 1
         if not self.animation_on:
             self.set_tiles()
+    
+    def neighbors(self, _tile, row_number, column_number):
+        a = self.tile_data
+        lista = [a[i][j] 
+            for i in range(row_number-1, row_number+2) 
+                for j in range(column_number-1, column_number+2) 
+                    if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and not((i != 1 and i != -1)  and (j != 1 and j != -1)) and a[i][j] == _tile and (i,j) != (row_number, column_number)]
+        return lista
+    
 
     def update(self, display, font):
         self.tiles.draw(display)
