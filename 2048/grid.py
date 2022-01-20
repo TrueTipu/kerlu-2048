@@ -1,13 +1,10 @@
-from tabnanny import check
-from turtle import update
-from numpy import tile
 import pygame
-from scipy import rand
 from defs import *
 from tile import Tile
 import random
 
 class Grid(pygame.sprite.Sprite):
+
     def __init__(self):
         super().__init__()
         self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
@@ -32,9 +29,7 @@ class Grid(pygame.sprite.Sprite):
         self.animation_count = 0
 
         self.keys_pressed = {pygame.K_RIGHT: False, pygame.K_LEFT: False, pygame.K_UP: False, pygame.K_DOWN: False}
-        
-        
-        #self.test_all()
+
 
     def get_score(self):
         return self.score
@@ -58,8 +53,7 @@ class Grid(pygame.sprite.Sprite):
                         row[col_i] = 4
                         self.tiles.add(Tile((row_i, col_i),kohta[0], kohta[1], 4, True))
                     else:self.tiles.add(Tile((row_i, col_i),kohta[0], kohta[1], cell))
-
-    
+   
     def create_tile_animation(self, _row, _col, des_row, des_col, _dir):
         pos = self.tile_poses[_row][_col]
         des = self.tile_poses[des_row][des_col]
@@ -80,7 +74,24 @@ class Grid(pygame.sprite.Sprite):
         
     def get_input(self):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_w]: print(self.neighbors(self.tile_data[0][0],0,0))
+        
+        """if keys[pygame.K_w]: print(self.neighbors(self.tile_data[0][0],0,0))
+        if keys[pygame.K_e]: print(self.neighbors(self.tile_data[0][1],0,1))
+        if keys[pygame.K_r]: print(self.neighbors(self.tile_data[0][2],0,2))
+        if keys[pygame.K_t]: print(self.neighbors(self.tile_data[0][3],0,3))
+        if keys[pygame.K_y]: print(self.neighbors(self.tile_data[1][0],1,0))
+        if keys[pygame.K_u]: print(self.neighbors(self.tile_data[1][1],1,1))
+        if keys[pygame.K_i]: print(self.neighbors(self.tile_data[1][2],1,2))
+        if keys[pygame.K_o]: print(self.neighbors(self.tile_data[1][3],1,3))
+        if keys[pygame.K_p]: print(self.neighbors(self.tile_data[2][0],2,0))
+        if keys[pygame.K_a]: print(self.neighbors(self.tile_data[2][1],2,1))
+        if keys[pygame.K_s]: print(self.neighbors(self.tile_data[2][2],2,2))
+        if keys[pygame.K_d]: print(self.neighbors(self.tile_data[2][3],2,3))
+        if keys[pygame.K_f]: print(self.neighbors(self.tile_data[3][0],3,0))
+        if keys[pygame.K_g]: print(self.neighbors(self.tile_data[3][1],3,1))
+        if keys[pygame.K_h]: print(self.neighbors(self.tile_data[3][2],3,2))
+        if keys[pygame.K_j]: print(self.neighbors(self.tile_data[3][3],3,3)) """
+
         if keys[pygame.K_RIGHT] and self.keys_pressed[pygame.K_RIGHT] == False:
             self.keys_pressed[pygame.K_RIGHT] = True
             self.move_manager((1,0))
@@ -171,26 +182,38 @@ class Grid(pygame.sprite.Sprite):
 
         if moved:   
             #uuden asettaminen             
-            self.set_new_tile()
+            self.set_new_tile(True)
             self.animation_on = True
             self.animation_count = 0
+        else:
+            self.set_new_tile(False)
     
-    def set_new_tile(self):
+    def set_new_tile(self, set):
         kohta = (random.randint(0, 3), random.randint(0, 3))
-        lista = [(0,0),(0,1),(0,2),(0,3),
+        vapaat_paikat = [(0,0),(0,1),(0,2),(0,3),
                 (1,0),(1,1),(1,2),(1,3),
                 (2,0),(2,1),(2,2),(2,3),
                 (3,0),(3,1),(3,2),(3,3)]
 
-        while self.tile_data[kohta[0]][kohta[1]] != 0 and lista:
-            #print(kohta)
-            lista.remove(kohta)
-            if not lista:
-                self.game_over()
-            else:
-                kohta = random.choice(lista)
-        if lista:
+        while self.tile_data[kohta[0]][kohta[1]] != 0 and vapaat_paikat:
+
+            vapaat_paikat.remove(kohta)
+            if not vapaat_paikat:break
+
+            kohta = random.choice(vapaat_paikat)
+        
+
+        if vapaat_paikat and set:
             self.tile_data[kohta[0]][kohta[1]] = random.choice((1,1,1,1,1,1,1,1,1,3))
+        elif not vapaat_paikat:
+            movable = False
+            for row in range(len(self.tile_data)):
+                    for col in  range(len(self.tile_data[0])):
+                        if self.neighbors(self.tile_data[row][col], row, col):
+                            print(self.neighbors(self.tile_data[row][col], row, col))
+                            movable = True
+            if not movable: self.game_over()
+            else: print('älä luovuta')
 
     def game_over(self):
         print('Huono')
@@ -209,8 +232,8 @@ class Grid(pygame.sprite.Sprite):
     def neighbors(self, _tile, row_number, column_number):
         a = self.tile_data
         lista = [a[i][j] 
-            for i in range(row_number-1, row_number+2) 
-                for j in range(column_number-1, column_number+2) 
+            for i in range(row_number-1, row_number+1) 
+                for j in range(column_number-1, column_number+1) 
                     if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and not((i != 1 and i != -1)  and (j != 1 and j != -1)) and a[i][j] == _tile and (i,j) != (row_number, column_number)]
         return lista
     
