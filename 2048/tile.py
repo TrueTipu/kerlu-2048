@@ -36,9 +36,12 @@ class Tile(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.center = (self.x+TILE_SIZE/2,self.y+TILE_SIZE/2)
 
-    def display_num(self, display, font):
-        text = font.render(f'{self.value}', 1, FONT_COLOR)
-        display.blit(text, self.rect.midtop)
+
+    def display_text(self,text: str, display, color):
+        font = pygame.font.SysFont("comic sans", FONT_SIZE - (len(text)-1)* 14)
+        text_surf = font.render(text, True, color)
+        text_rect = text_surf.get_rect(center = self.rect.center)
+        display.blit(text_surf, (text_rect.x, text_rect.y))
     
     def set_animation_dir(self, dir):
         self.dir.x = dir[0]
@@ -49,8 +52,8 @@ class Tile(pygame.sprite.Sprite):
         self.rect.x += self.dir.x * TILE_ANIM_SPEED
         self.rect.y += self.dir.y * TILE_ANIM_SPEED
 
-    def update(self, display, font):
+    def update(self, display):
         if self.spawn:
             self.spawn_anim()
         else:
-            self.display_num(display, font)
+            self.display_text(str(self.value),display, (0,0,0))

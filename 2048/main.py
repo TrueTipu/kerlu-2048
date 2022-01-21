@@ -22,11 +22,18 @@ def run_game():
 
     text_font = pygame.font.SysFont("comic sans", FONT_SIZE)
 
+    go_text_font = pygame.font.SysFont("calibri Black", round(FONT_SIZE * 0.8) )
+    game_over_bc = pygame.image.load(BC_ART)
+
     running = True
 
-    def display_score(score, font, pos):
-        text = font.render(f'{score}', 1, FONT_COLOR)
-        SCREEN.blit(text, pos)
+    def display_text(text: str, font: pygame.font.Font, pos, color):
+        lines = text.splitlines()
+        for i, l in enumerate(lines):
+            text_surf = font.render(l, True, color)
+            text_rect = text_surf.get_rect(center = pos)
+            SCREEN.blit(text_surf, (text_rect.x, text_rect.y +FONT_SIZE*i))
+
 
 
     while running:
@@ -37,12 +44,19 @@ def run_game():
                 pygame.quit()
                 running = False
                 sys.exit()
+            if grid.game_over_state and event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    grid.reset()
         
         SCREEN.fill("#FFDFAA")
         grid_sprite.draw(SCREEN)
-        grid_sprite.update(SCREEN, text_font)
+        grid_sprite.update(SCREEN)
 
-        display_score(grid_sprite.sprite.get_score(), text_font, (50, 50))
+        display_text(str(grid.get_score()), text_font, (100, 100), (0,0,0))
+
+        if grid.game_over_state:
+            SCREEN.blit(game_over_bc, (0,0))
+            display_text('''GAME OVER \n PRESS "R" BUTTON TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 0,0))
 
         pygame.display.update()
 

@@ -17,10 +17,9 @@ class Grid(pygame.sprite.Sprite):
                           [((LEFT_OFFSET + TILE_GAP, TOP_OFFSET + TILE_GAP+ (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3))]]
 
         self.tiles = pygame.sprite.Group()
-        self.tile_data = [[0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,0,0],
-                          [0,0,2,2]]
+
+        self.tile_data = Grid.randomize_grid()
+
         self.set_tiles()
 
         self.score = 0
@@ -30,8 +29,23 @@ class Grid(pygame.sprite.Sprite):
 
         self.keys_pressed = {pygame.K_RIGHT: False, pygame.K_LEFT: False, pygame.K_UP: False, pygame.K_DOWN: False}
 
-        self.game_over_bc = pygame.image.load(BC_ART)
         self.game_over_state = False
+
+    def randomize_grid():
+        first_1 = random.randint(0,15)
+        first_2 = random.randint(0,15)
+        if first_2 == first_1: first_2 += 1
+        data =     [[0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0],
+                    [0,0,0,0]]
+        i = 0
+        for row in data:
+            for col_i in range(len(row)):
+                i += 1
+                if i == first_1 or i == first_2:
+                    row[col_i] = 2
+        return data
 
 
     def get_score(self):
@@ -78,7 +92,7 @@ class Grid(pygame.sprite.Sprite):
     def get_input(self):
         keys = pygame.key.get_pressed()
         
-        """if keys[pygame.K_w]: print(self.neighbors(self.tile_data[0][0],0,0))
+        '''if keys[pygame.K_w]: print(self.neighbors(self.tile_data[0][0],0,0))
         if keys[pygame.K_e]: print(self.neighbors(self.tile_data[0][1],0,1))
         if keys[pygame.K_r]: print(self.neighbors(self.tile_data[0][2],0,2))
         if keys[pygame.K_t]: print(self.neighbors(self.tile_data[0][3],0,3))
@@ -93,7 +107,7 @@ class Grid(pygame.sprite.Sprite):
         if keys[pygame.K_f]: print(self.neighbors(self.tile_data[3][0],3,0))
         if keys[pygame.K_g]: print(self.neighbors(self.tile_data[3][1],3,1))
         if keys[pygame.K_h]: print(self.neighbors(self.tile_data[3][2],3,2))
-        if keys[pygame.K_j]: print(self.neighbors(self.tile_data[3][3],3,3)) """
+        if keys[pygame.K_j]: print(self.neighbors(self.tile_data[3][3],3,3)) '''
 
         if keys[pygame.K_RIGHT] and self.keys_pressed[pygame.K_RIGHT] == False:
             self.keys_pressed[pygame.K_RIGHT] = True
@@ -213,14 +227,13 @@ class Grid(pygame.sprite.Sprite):
             for row in range(len(self.tile_data)):
                     for col in  range(len(self.tile_data[0])):
                         if self.neighbors(self.tile_data[row][col], row, col):
-                            print(self.neighbors(self.tile_data[row][col], row, col))
+                            #print(self.neighbors(self.tile_data[row][col], row, col))
                             movable = True
             if not movable: self.game_over()
-            else: print('älä luovuta')
 
     def game_over(self):
         self.game_over_state = True
-        print('Huono')
+        #print('Huono')
     
     def voitto(self):
         print('Voitit')
@@ -238,21 +251,22 @@ class Grid(pygame.sprite.Sprite):
         lista = [a[i][j] 
             for i in range(row_number-1, row_number+2) 
                 for j in range(column_number-1, column_number+2) 
-                    if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and (not((i != 1 or i != -1) and (j != 1 or j != -1))) and a[i][j] == _tile and (i,j) != (row_number, column_number)]
+                    if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and (((i == row_number) or (j == column_number)) and not(j == column_number and i == row_number)) and a[i][j] == _tile]
         return lista
     
+    def reset(self):
+        self.game_over_state = False
+        self.tile_data = Grid.randomize_grid()
+        self.score = 0
+        self.set_tiles()
 
-    def update(self, display, font):
-        if not self.game_over_state:
-            self.tiles.draw(display)
-            self.tiles.update(display, font)
-            if self.animation_on:
-                self.animate_tiles()
-            else:
-                self.get_input()
+
+    def update(self, display):
+        self.tiles.draw(display)
+        self.tiles.update(display)
+        if self.animation_on:
+            self.animate_tiles()
         else:
-            self.tiles.draw(display)
-            self.tiles.update(display, font)
-            display.blit(self.game_over_bc, (0,0))
+            self.get_input()
            
     
