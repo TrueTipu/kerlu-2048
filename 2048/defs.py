@@ -5,8 +5,11 @@ WIDTH = 720
 HEIGHT = 720
 FPS = 60
 
-FONT_SIZE = 80
+KEY = 5829
+
+FONT_SIZE = 70
 FONT_COLOR = (0, 0, 0)
+TEXT_OFFSET = 140
 
 BC_ART = 'art/bc/bc_transparent.png'
 
@@ -19,3 +22,5 @@ TILE_SIZE = 100
 TILE_GAP = 25
 TILE_ANIM_LENGTH = 3
 TILE_ANIM_SPEED = 1
+
+SAVE_DIRECT = 'saves/save_data.txt'

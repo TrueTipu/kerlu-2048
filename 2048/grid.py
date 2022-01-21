@@ -1,6 +1,7 @@
 import pygame
 from defs import *
 from tile import Tile
+from save_manager import Save_Manager
 import random
 
 class Grid(pygame.sprite.Sprite):
@@ -23,6 +24,7 @@ class Grid(pygame.sprite.Sprite):
         self.set_tiles()
 
         self.score = 0
+        self.high_score = Save_Manager.load()
 
         self.animation_on = False
         self.animation_count = 0
@@ -50,6 +52,9 @@ class Grid(pygame.sprite.Sprite):
 
     def get_score(self):
         return self.score
+    
+    def get_high_score(self):
+        return self.high_score
 
     def test_all(self):
         for row in self.tile_poses:
@@ -232,6 +237,9 @@ class Grid(pygame.sprite.Sprite):
             if not movable: self.game_over()
 
     def game_over(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+            Save_Manager.save(self.high_score)
         self.game_over_state = True
         #print('Huono')
     
@@ -268,5 +276,4 @@ class Grid(pygame.sprite.Sprite):
             self.animate_tiles()
         else:
             self.get_input()
-           
-    
+            

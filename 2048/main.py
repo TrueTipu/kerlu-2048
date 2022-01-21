@@ -5,7 +5,7 @@ from pygame import sprite
 
 from defs import *
 from grid import Grid
-from tile import Tile
+
 
 def run_game():
     pygame.init()
@@ -18,7 +18,6 @@ def run_game():
 
     grid = Grid()
     grid_sprite = pygame.sprite.GroupSingle(grid)
-
 
     text_font = pygame.font.SysFont("comic sans", FONT_SIZE)
 
@@ -52,11 +51,12 @@ def run_game():
         grid_sprite.draw(SCREEN)
         grid_sprite.update(SCREEN)
 
-        display_text(str(grid.get_score()), text_font, (100, 100), (0,0,0))
+        display_text(str(grid.get_score()), text_font, (TEXT_OFFSET, 100), (0,0,0))
+        display_text(str(grid.get_high_score()), text_font, (WIDTH - TEXT_OFFSET, 100), (0,0,0))
 
         if grid.game_over_state:
             SCREEN.blit(game_over_bc, (0,0))
-            display_text('''GAME OVER \n PRESS "R" BUTTON TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 0,0))
+            display_text('''GAME OVER \n PRESS "R" BUTTON TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 50,50))
 
         pygame.display.update()
 
