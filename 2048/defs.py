@@ -8,6 +8,8 @@ FPS = 60
 FONT_SIZE = 80
 FONT_COLOR = (0, 0, 0)
 
+BC_ART = 'art/bc/bc_transparent.png'
+
 GRID_SIZE = 525
 TOP_PLUS_OFFSET = 50
 TOP_OFFSET = HEIGHT / 2 - GRID_SIZE / 2 + TOP_PLUS_OFFSET

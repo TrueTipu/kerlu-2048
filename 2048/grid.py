@@ -30,6 +30,9 @@ class Grid(pygame.sprite.Sprite):
 
         self.keys_pressed = {pygame.K_RIGHT: False, pygame.K_LEFT: False, pygame.K_UP: False, pygame.K_DOWN: False}
 
+        self.game_over_bc = pygame.image.load(BC_ART)
+        self.game_over_state = False
+
 
     def get_score(self):
         return self.score
@@ -216,6 +219,7 @@ class Grid(pygame.sprite.Sprite):
             else: print('älä luovuta')
 
     def game_over(self):
+        self.game_over_state = True
         print('Huono')
     
     def voitto(self):
@@ -232,18 +236,23 @@ class Grid(pygame.sprite.Sprite):
     def neighbors(self, _tile, row_number, column_number):
         a = self.tile_data
         lista = [a[i][j] 
-            for i in range(row_number-1, row_number+1) 
-                for j in range(column_number-1, column_number+1) 
-                    if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and not((i != 1 and i != -1)  and (j != 1 and j != -1)) and a[i][j] == _tile and (i,j) != (row_number, column_number)]
+            for i in range(row_number-1, row_number+2) 
+                for j in range(column_number-1, column_number+2) 
+                    if i > -1 and j > -1 and j < len(a[0]) and i < len(a) and (not((i != 1 or i != -1) and (j != 1 or j != -1))) and a[i][j] == _tile and (i,j) != (row_number, column_number)]
         return lista
     
 
     def update(self, display, font):
-        self.tiles.draw(display)
-        self.tiles.update(display, font)
-        if self.animation_on:
-            self.animate_tiles()
+        if not self.game_over_state:
+            self.tiles.draw(display)
+            self.tiles.update(display, font)
+            if self.animation_on:
+                self.animate_tiles()
+            else:
+                self.get_input()
         else:
-            self.get_input()
+            self.tiles.draw(display)
+            self.tiles.update(display, font)
+            display.blit(self.game_over_bc, (0,0))
            
     
