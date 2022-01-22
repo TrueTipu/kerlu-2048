@@ -1,5 +1,9 @@
-
-
+'''
+-monet pygame tutoriaalit tallentavat constant variableja ommaan tiedostoon helpommin katseltaviksi
+-tein siis saman ja tallentelin tänne kaiken näköistä
+-joitain juttuja on täällä varmaan turhaan ja joitakin ei ole vaikka pitäisi
+-totuttelen siis vasta tälläisen käyttämiseen
+'''
 
 WIDTH = 720
 HEIGHT = 720
@@ -23,6 +27,6 @@ LEFT_OFFSET = WIDTH / 2 - GRID_SIZE / 2
 TILE_SIZE = 100
 TILE_GAP = 25
 TILE_ANIM_LENGTH = 3
-TILE_ANIM_SPEED = 1
+RED_VALUE = 20
 
 SAVE_DIRECT = 'saves/save_data.txt'
