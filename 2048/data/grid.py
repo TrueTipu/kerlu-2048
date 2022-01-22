@@ -1,7 +1,7 @@
 import pygame
-from defs import *
-from tile import Tile
-from save_manager import Save_Manager
+from data.defs import *
+from data.tile import Tile
+from data.save_manager import Save_Manager
 import random
 
 #sprite class gridille (kuvana vain valkoinen tausta) joka myös hallitsee koko pelilogiikkaa

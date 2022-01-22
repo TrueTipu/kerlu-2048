@@ -1,7 +1,7 @@
 import pygame
 from math import log2
 
-from defs import *
+from data.defs import *
 
 #sprite class jokaiselle yksittäiselle ruudulle jossa on numero, ei hallitse kovin paljoa sillä suurin osa logiikasta hoituu gridin kautta
 class Tile(pygame.sprite.Sprite):

@@ -1,8 +1,8 @@
 import pygame, sys
 import ctypes
 
-from defs import *
-from grid import Grid
+from data.defs import *
+from data.grid import Grid
 
 #pääosin pelin asetusten ja UI:n hallinnointia, sisältää peli logiikan häviö ja voitto screenille(koska UI) muttei paljon muuta
 def run_game(): 
