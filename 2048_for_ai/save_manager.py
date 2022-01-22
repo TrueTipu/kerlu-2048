@@ -1,32 +1,23 @@
-# import json
-# import secrets
-# from defs import *
-# import random
+import json
+from defs import *
+import random
 
-# class Save_Manager():
-#     def save(score):
-#         data = {'score': Save_Manager.secret(score)}
-#         with open(SAVE_DIRECT, 'w') as file:
-#             json.dump(data, file)
+#hallitsee high scoren tallentamisen, oikeastaan ei kovin olellista pelin kannalta mutta haluisn opetella miten tallennus toimisi
+class Save_Manager():
 
-#     def secret(score):
-#         a = [random.randint(0, 1000000) for i in range(0, 10000)]
-#         a[KEY] = random.randint(0, 10000) 
-#         if a[KEY] == KEY:
-#             a[KEY] = a[KEY] // 2 *random.randint(5,18)
-#         a[a[KEY]] = (score + abs(a[KEY // 2 + 6] - 1000))
-#         return a
+    def save(score): #tallentaa scoren txt tiedostoon json muodossa
+        data = {'score': score}
+        with open(SAVE_DIRECT, 'w') as file: #avaa/luo tiedoston jos sitä ei vielä ole
+            json.dump(data, file) #converttaa datan json formaatiin
 
-
-#     def load():
-#         try:
-#             with open(SAVE_DIRECT) as file:
-#                 data = json.load(file)
-#                 data = data['score']
-#         except:
-#             Save_Manager.save(0)
-#             return 0
-#         if data:
-#             score = data[data[KEY]] - abs(data[KEY // 2 + 6] - 1000)
-#             return score 
-#         return 0
+    def load(): #palauttaa scoren tiedostosijainnista
+        try: #yrittää kerätä scoren tiedostosta
+            with open(SAVE_DIRECT) as file:
+                data = json.load(file)
+        except: #jos tiedostoa ei olemassa, niin tallentaa scoren 0 (=jatkossa on tiedosto olemassa)
+            Save_Manager.save(0)
+            return 0
+        if data: #jos dataa on olemassa
+            score = data['score']
+            return score 
+        return 0
