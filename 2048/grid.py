@@ -32,6 +32,7 @@ class Grid(pygame.sprite.Sprite):
         self.keys_pressed = {pygame.K_RIGHT: False, pygame.K_LEFT: False, pygame.K_UP: False, pygame.K_DOWN: False}
 
         self.game_over_state = False
+        self.game_won_state = False
 
     def randomize_grid():
         first_1 = random.randint(0,15)
@@ -153,7 +154,7 @@ class Grid(pygame.sprite.Sprite):
             if _tile == target_tile: #jos sama
                 self.tile_data[_row if not reverse else _max][_max if not reverse else _col] = _tile * 2 #asetetaan kaksinkertainen arvo
                 if _tile * 2 == 2048:
-                    self.voitto()
+                    self.game_won()
                 self.score += _tile * 2
                 self.create_tile_animation(_row, _col,_row if not reverse else _max,_max if not reverse else _col, max_dir*-1)
                 _max += max_dir #lisää maxia ettei kaksi yhdisty samal kerral
@@ -243,8 +244,11 @@ class Grid(pygame.sprite.Sprite):
         self.game_over_state = True
         #print('Huono')
     
-    def voitto(self):
-        print('Voitit')
+    def game_won(self):
+        if self.score > self.high_score:
+            self.high_score = self.score
+            Save_Manager.save(self.high_score)
+        self.game_won_state = True
 
     def animate_tiles(self):
         for tile in self.tiles.sprites():
@@ -268,6 +272,10 @@ class Grid(pygame.sprite.Sprite):
         self.score = 0
         self.set_tiles()
 
+    def continue_game(self):
+        self.game_won_state = False
+        self.set_tiles()
+
 
     def update(self, display):
         self.tiles.draw(display)
@@ -275,5 +283,6 @@ class Grid(pygame.sprite.Sprite):
         if self.animation_on:
             self.animate_tiles()
         else:
-            self.get_input()
+            if not (self.game_won_state or self.game_over_state):
+                self.get_input()
             

@@ -38,7 +38,7 @@ class Tile(pygame.sprite.Sprite):
 
 
     def display_text(self,text: str, display, color):
-        font = pygame.font.SysFont("comic sans", FONT_SIZE - (len(text)-1)* 14)
+        font = pygame.font.SysFont("comic sans", FONT_SIZE_1 - (len(text)-1)* 14)
         text_surf = font.render(text, True, color)
         text_rect = text_surf.get_rect(center = self.rect.center)
         display.blit(text_surf, (text_rect.x, text_rect.y))

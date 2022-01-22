@@ -7,11 +7,13 @@ FPS = 60
 
 KEY = 5829
 
-FONT_SIZE = 70
+FONT_SIZE_1 = 70
+FONT_SIZE_2 = 50
 FONT_COLOR = (0, 0, 0)
 TEXT_OFFSET = 140
 
-BC_ART = 'art/bc/bc_transparent.png'
+BC_BLACK_ART = 'art/bc/bc_black_transparent.png'
+BC_YELLOW_ART = 'art/bc/bc_yellow_transparent.png'
 
 GRID_SIZE = 525
 TOP_PLUS_OFFSET = 50
