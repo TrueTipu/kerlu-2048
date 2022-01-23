@@ -8,19 +8,19 @@ import random
 #spriten olisi voinut erottaa tästä mutta se olisi ollut turhaa joten pistin samaan
 class Grid(pygame.sprite.Sprite):
 
-    def __init__(self): #init luodessa
+    def __init__(self, x, y): #init luodessa
         super().__init__() #kutsuu sprite inittiä että sprite toimii¨
 
         #luo valkoisen kuvan ja asettelee sen rectanglen avulla (kaikki tämän jälkeen on pelkkää pelilogiikkaa)
         self.image = pygame.Surface((GRID_SIZE, GRID_SIZE))
         self.image.fill((255, 255, 240))
-        self.rect = self.image.get_rect(center = (WIDTH/2, (HEIGHT/2 + TOP_PLUS_OFFSET))) 
+        self.rect = self.image.get_rect(topleft = (x, y)) 
 
         #laskee jokaisen tilen pikselisijainnin ja tallentaa ne matriisiin myöhemmin kätettäviksi
-        self.tile_poses = [[((LEFT_OFFSET + TILE_GAP, TOP_OFFSET + TILE_GAP)),((LEFT_OFFSET + (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP)),((LEFT_OFFSET + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP)),((LEFT_OFFSET + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP))],
-                          [((LEFT_OFFSET + TILE_GAP, TOP_OFFSET + TILE_GAP+ (TILE_SIZE + TILE_GAP))),((LEFT_OFFSET + (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP))),((LEFT_OFFSET + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP))),((LEFT_OFFSET + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)))],
-                          [((LEFT_OFFSET + TILE_GAP, TOP_OFFSET + TILE_GAP+ (TILE_SIZE + TILE_GAP)*2)),((LEFT_OFFSET + (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*2)),((LEFT_OFFSET + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*2)),((LEFT_OFFSET + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*2))],
-                          [((LEFT_OFFSET + TILE_GAP, TOP_OFFSET + TILE_GAP+ (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((LEFT_OFFSET + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, TOP_OFFSET + TILE_GAP + (TILE_SIZE + TILE_GAP)*3))]]
+        self.tile_poses = [[((x + TILE_GAP, y + TILE_GAP)),((x + (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP)),((x + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP)),((x + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP))],
+                          [((x + TILE_GAP, y + TILE_GAP+ (TILE_SIZE + TILE_GAP))),((x + (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP))),((x + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP))),((x + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)))],
+                          [((x + TILE_GAP, y + TILE_GAP+ (TILE_SIZE + TILE_GAP)*2)),((x + (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*2)),((x + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*2)),((x + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*2))],
+                          [((x + TILE_GAP, y + TILE_GAP+ (TILE_SIZE + TILE_GAP)*3)),((x + (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((x + 2 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*3)),((x + 3 * (TILE_SIZE + TILE_GAP) + TILE_GAP, y + TILE_GAP + (TILE_SIZE + TILE_GAP)*3))]]
 
         self.tiles = pygame.sprite.Group() #luo sprite group tileille
 
@@ -40,8 +40,8 @@ class Grid(pygame.sprite.Sprite):
         self.high_score = Save_Manager.load()
 
         #luodaan vielä muutama hyödyllinen muuttuja animaatioita varten
-        self.animation_on = False
-        self.animation_timer = 0
+        # self.animation_on = False
+        # self.animation_timer = 0
 
         self.keys_pressed = [] #tallennetaan painetun näppäimen index, että pygame ymmärtää milloin näppäin painetaan alas
 
@@ -109,7 +109,7 @@ class Grid(pygame.sprite.Sprite):
                     else: #Luo uuden tile olion annettuun kohtaan annetulla valuella
                         self.tiles.add(Tile((row_i, col_i),world_pos[0], world_pos[1], cell)) 
    
-    def create_tile_animation(self, _row, _col, des_row, des_col, _dir): #laskee ja asetta yksittäisen tilen nopeuden
+    """  def create_tile_animation(self, _row, _col, des_row, des_col, _dir): #laskee ja asetta yksittäisen tilen nopeuden
         pos = self.tile_poses[_row][_col] #lähtökohta
         des = self.tile_poses[des_row][des_col] #siirtymä kohde
 
@@ -127,7 +127,7 @@ class Grid(pygame.sprite.Sprite):
         if tile:
             tile.set_animation_dir(dir) #aseta tilelle laskettu suunta
         else:
-            print('error?') #jos tileä ei löydy jota ei pitäisi koskaan tapahtua
+            print('error?') #jos tileä ei löydy jota ei pitäisi koskaan tapahtua """
         
     def check_tile(self, _tile, _row, _col, _max, _min, max_dir, reverse = False)-> int: #tarkistaa yksittäisen ruudun liikutusmahdollisuudet
         #koodi on hieman sekava myönnän
@@ -151,11 +151,9 @@ class Grid(pygame.sprite.Sprite):
                 self.tile_data[_row if not reverse else _max][_max if not reverse else _col] = _tile * 2 #asetetaan kaksinkertainen arvo
                 self.score += _tile * 2 #lisää score yhdistymisestä
 
-                self.create_tile_animation(_row, _col,_row if not reverse else _max,_max if not reverse else _col, max_dir*-1) #laske/aseta liikkumisnopeudet tilelle
                 _max += max_dir #lisää maxia ettei kaksi yhdisty samal kerral
             else: #muussa tapauksessa (= löysi tyhjän kohdan)
                 self.tile_data[_row if not reverse else _max][_max if not reverse else _col] = _tile #lisää arvo tähän kohtaan
-                self.create_tile_animation(_row, _col,_row if not reverse else _max,_max if not reverse else _col, max_dir*-1) #laske/aseta liikkumisnopeudet tilelle
 
             return _max, True #palauta tieto että ruutua liikutettiin
         return _max, False #ruutua ei liikutettu
@@ -206,11 +204,9 @@ class Grid(pygame.sprite.Sprite):
         if moved: #jos jokin liikkui = liikuttaminen suuntaan onnistuu
             #aseta uusi ruutu            
             self.set_new_tile(True) #true parametrilla asettaa uuden tilen
-            #asettaa liikuttamisajan jotta tilet liikkuvat ennen uutta siirtoa
-            self.animation_on = True 
-            self.animation_timer = 0
         else: #jos mikään ei liikkunut
             self.set_new_tile(False) #false parametrilla metodi vain tarkistaa oletko hävinnyt pelin
+        self.set_tiles()
     
     def set_new_tile(self, set): #aseta uusi ruutu
         new_pos = (random.randint(0, 3), random.randint(0, 3)) #arvo kohta
@@ -292,14 +288,14 @@ class Grid(pygame.sprite.Sprite):
             Save_Manager.save(self.high_score)
         self.game_over_state = True #aseta tila häviötilaan
 
-    def animate_tiles(self): #liikuttaa jokaista tileä oman nopeutensa verran
+    """ def animate_tiles(self): #liikuttaa jokaista tileä oman nopeutensa verran
         for tile in self.tiles.sprites():
             tile.animate() #liikuta jokaista tileä
 
         self.animation_on = False if self.animation_timer >= TILE_ANIM_LENGTH else True #jos animaatio on valmis, poistu animaatiotilasta
         self.animation_timer += 1 #kasvata animaatiotimeria
         if not self.animation_on: #jos animaatio on valmis
-            self.set_tiles() #uudelleenluo tilet (= joka on tyhmää mutta paras ratkaisu)
+            self.set_tiles() #uudelleenluo tilet (= joka on tyhmää mutta paras ratkaisu) """
     
     def reset(self): #uudelleen aloittaa pelin häviön jälkeen
         self.game_over_state = False #poistaa häviötilan
@@ -317,10 +313,6 @@ class Grid(pygame.sprite.Sprite):
         self.tiles.draw(display) #piirtää listan tilet ikkunaan
         self.tiles.update(display)  #päivittää tilejen tiedot
 
-        if self.animation_on: #jos animaatio päällä
-            self.animate_tiles() #liikuta jokaista tileä
-
-        else: #jos animaatio ei ole päällä, eikä häviö/voitto tila,
-            if not (self.game_over_state):
-                self.get_input() #hae inputteja
+        if not (self.game_over_state):
+            self.get_input() #hae inputteja
             

@@ -25,12 +25,20 @@ def run_game():
 
     clock = pygame.time.Clock()
 
-    #luodaan grid eli ruudukko joka halinnoi kaiken gameplay logiikan
-    grid = Grid()
-    grid_sprite = pygame.sprite.GroupSingle(grid)
+    #luodaan gridit eli ruudukot joka halinnoi kaiken gameplay logiikan
+    #ruudukkojen sijainnit muistiin HUOM 1d lista!!!
+    grid_poses = [(GRID_CAP, GRID_TOP_OFFSET + GRID_CAP), (GRID_CAP + (GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP), (GRID_CAP + 2*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP), (GRID_CAP + 3*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP),
+                 (GRID_CAP, GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + (GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + 2*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + 3*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE)]
+
+    grid_sprites = pygame.sprite.Group() #lista grideille
+
+    for pos in grid_poses:
+        grid_sprites.add(Grid(pos[0], pos[1]))
+
+
 
     #luodaan teksti fontteja joiden käyttö on tosi epäloogista ja ympäri koodia mutten nyt ala siistimäänkään
-    text_font = pygame.font.SysFont("arial Black", FONT_SIZE_2)
+    text_font = pygame.font.SysFont("arial", FONT_SIZE_2)
     go_text_font = pygame.font.SysFont("calibri Black", FONT_SIZE_1)
     #haetaan kuvat häviö ja voitto stateen kansiosta (ainoa artti pelissä)
     game_over_bc = pygame.image.load(BC_BLACK_ART)
@@ -41,7 +49,8 @@ def run_game():
     while running:
         #pistää max framerateksi 60, toivottavasti ei mene myöskään sitä alemmaksi
         #toisinsanoen tämä while loop mikä hallitsee muita pelin asioita, tapahtuu vain 60 kertaa sekunnissa, eikä sitä normaalia 100-1000 mitä se ehkä voisi pyörittää
-        clock.tick(FPS) 
+        delta_time = clock.tick(FPS) 
+        fps = 1000 / delta_time
 
         #pygame eventtejen hallinta
         for event in pygame.event.get():
@@ -52,26 +61,28 @@ def run_game():
                 sys.exit()
             
             #game_over ja game_won statesta poispääsy inputtien avulla, helpompi tehdä täällä kuin gridissä
-            if grid.game_over_state and event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_r:
-                    grid.reset()
+            # if grid.game_over_state and event.type == pygame.KEYDOWN:
+            #     if event.key == pygame.K_r:
+            #         grid.reset()
         
         #värjää taustan 
         SCREEN.fill("#FFDFAA")
         #piirtää ja kutsuu ruudukon päivitystoimintoa
-        grid_sprite.draw(SCREEN)
-        grid_sprite.update(SCREEN)
+        grid_sprites.draw(SCREEN)
+        grid_sprites.update(SCREEN)
 
         #piirtää scoren ja highscoren
-        display_text(str(grid.get_score()), text_font, (TEXT_OFFSET, 100), (0,0,0))
-        display_text(str(grid.get_high_score()), text_font, (WIDTH - TEXT_OFFSET, 100), (0,0,0))
+        for grid in grid_sprites.sprites():
+            display_text(str(grid.get_score()), text_font, (grid.rect.x +10, grid.rect.y+10), (0,0,0))
+
         #piirtää otsikot niille
+        display_text('FPS: ' + str(round(fps,1)), go_text_font, (WIDTH //2, 25), (0,0,0))
         display_text('SCORE:', go_text_font, (TEXT_OFFSET, 50), (0,0,0))
         display_text('HIGHSCORE:', go_text_font, (WIDTH - TEXT_OFFSET, 50), (0,0,0))
 
-        if grid.game_over_state: #jos peli hävitty
-            SCREEN.blit(game_over_bc, (0,0)) #gameover kuva
-            display_text('''GAME OVER \n PRESS "R" TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 50,50)) #piirrä gameover teksti
+        # if grid.game_over_state: #jos peli hävitty
+        #     SCREEN.blit(game_over_bc, (0,0)) #gameover kuva
+        #     display_text('''GAME OVER \n PRESS "R" TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 50,50)) #piirrä gameover teksti
 
         pygame.display.update() #päivitetään ikkuna johon muutokset on tehty
 

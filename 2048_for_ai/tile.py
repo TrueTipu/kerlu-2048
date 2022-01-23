@@ -29,14 +29,15 @@ class Tile(pygame.sprite.Sprite):
         self.value = value
         
         #jos täysin tyhjästä syntynyt niin synny pienenä
-        self.spawn = first
+        #poistetaan tämäkin animaatio
+        """   self.spawn = first
         if self.spawn:
             self.size = TILE_SIZE / 10
             self.image = pygame.Surface((self.size,  self.size))
-            self.image.fill(self.color)
+            self.image.fill(self.color) """
 
-
-    def spawn_anim(self): #kasva pienestä isoksi jos spawn statessa vielä
+        #turha
+        """     def spawn_anim(self): #kasva pienestä isoksi jos spawn statessa vielä
         if self.image.get_size()[0] == TILE_SIZE: #jos täysikokoinen niin lopeta kasvu
             self.spawn = False
         else: #muuten kasva
@@ -45,14 +46,15 @@ class Tile(pygame.sprite.Sprite):
             self.image = pygame.Surface((self.size,  self.size))
             self.image.fill(self.color)
             self.rect = self.image.get_rect()
-            self.rect.center = (self.x+TILE_SIZE/2,self.y+TILE_SIZE/2)
-
+            self.rect.center = (self.x+TILE_SIZE/2,self.y+TILE_SIZE/2) """
+    #turha
+    """ 
     def display_text(self,text: str, display, color): #tekstin piirto koodi helpottamaan elämää kuten mainissa
         font = pygame.font.SysFont("comic sans", FONT_SIZE_1 - (len(text)-1)* 14) #määritä font tekstin pituuden mukaan
         #renderöi teksti ja piirrä se näytölle
         text_surf = font.render(text, True, color)
         text_rect = text_surf.get_rect(center = self.rect.center)
-        display.blit(text_surf, (text_rect.x, text_rect.y))
+        display.blit(text_surf, (text_rect.x, text_rect.y)) """
     
     def set_animation_dir(self, dir): #aseta liikkumasuunta halutuksi, grid scriptin kutsuma
         self.dir.x = dir[0]
@@ -64,8 +66,5 @@ class Tile(pygame.sprite.Sprite):
 
 
     def update(self, display): #grid kutsuu tätä joka frame pitääkseen ruudun ajan tasalla
-        if self.spawn: #jos spawn statessa
-            self.spawn_anim() #kutsu kasvatusta
-        else:
-            #aloita tekstin piirto vasta kuin isona
-            self.display_text(str(self.value),display, (0,0,0)) 
+        #skipataan teksti koska resurssit
+        pass#self.display_text(str(self.value),display, (0,0,0)) 
