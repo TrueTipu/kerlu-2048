@@ -31,6 +31,7 @@ def run_game():
                  (GRID_CAP, GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + (GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + 2*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE), (GRID_CAP + 3*(GRID_SIZE + GRID_CAP), GRID_TOP_OFFSET + GRID_CAP * 2 + GRID_SIZE)]
 
     grid_sprites = pygame.sprite.Group() #lista grideille
+    grids_lost = []
 
     for pos in grid_poses:
         grid_sprites.add(Grid(pos[0], pos[1]))
@@ -41,7 +42,10 @@ def run_game():
     text_font = pygame.font.SysFont("arial", FONT_SIZE_2)
     go_text_font = pygame.font.SysFont("calibri Black", FONT_SIZE_1)
     #haetaan kuvat häviö ja voitto stateen kansiosta (ainoa artti pelissä)
-    game_over_bc = pygame.image.load(BC_BLACK_ART)
+    game_over_bc = pygame.image.load(BC_RED_ART)
+
+    #ai stufd begins
+    gen = 0 #generaatio mis mennään
 
     #pistetään peli käyntiin
     running = True
@@ -72,17 +76,29 @@ def run_game():
         grid_sprites.update(SCREEN)
 
         #piirtää scoren ja highscoren
-        for grid in grid_sprites.sprites():
+
+        for grid in grid_sprites.sprites(): 
+            grid: Grid
             display_text(str(grid.get_score()), text_font, (grid.rect.x +10, grid.rect.y+10), (0,0,0))
+            if grid.game_over_state and not grid in grids_lost:
+                grids_lost.append(grid)
+
+        for grid in grids_lost:
+            grid: Grid
+            SCREEN.blit(game_over_bc, (grid.rect.x,grid.rect.y)) #gameover kuva
+        if len(grids_lost) == 8:
+            for grid in grids_lost: grid.reset()
+            gen += 1
+            grids_lost.clear()
+
+
 
         #piirtää otsikot niille
         display_text('FPS: ' + str(round(fps,1)), go_text_font, (WIDTH //2, 25), (0,0,0))
-        display_text('SCORE:', go_text_font, (TEXT_OFFSET, 50), (0,0,0))
+        display_text('GEN:' + str(gen), go_text_font, (TEXT_OFFSET, 50), (0,0,0))
         display_text('HIGHSCORE:', go_text_font, (WIDTH - TEXT_OFFSET, 50), (0,0,0))
 
-        # if grid.game_over_state: #jos peli hävitty
-        #     SCREEN.blit(game_over_bc, (0,0)) #gameover kuva
-        #     display_text('''GAME OVER \n PRESS "R" TO RETRY''', go_text_font, (WIDTH / 2, HEIGHT / 2), (255, 50,50)) #piirrä gameover teksti
+
 
         pygame.display.update() #päivitetään ikkuna johon muutokset on tehty
 

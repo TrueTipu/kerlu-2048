@@ -16,7 +16,7 @@ FONT_SIZE_2 = 30
 FONT_COLOR = (0, 0, 0)
 TEXT_OFFSET = 140
 
-BC_BLACK_ART = 'art/bc/bc_black_transparent.png'
+BC_RED_ART = 'art/bc/bc_red_transparent.png'
 
 GRID_SIZE = 290
 GRID_CAP = 25
