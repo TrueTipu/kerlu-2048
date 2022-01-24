@@ -1,3 +1,4 @@
+from turtle import color
 import pygame
 from defs import *
 from tile import Tile
@@ -286,6 +287,7 @@ class Grid(pygame.sprite.Sprite):
             #vaihda ja tallenna highscore
             self.high_score = self.score 
             Save_Manager.save(self.high_score)
+        self.image.fill(pygame.color.Color('red'))
         self.game_over_state = True #aseta tila häviötilaan
 
     """ def animate_tiles(self): #liikuttaa jokaista tileä oman nopeutensa verran
@@ -299,6 +301,7 @@ class Grid(pygame.sprite.Sprite):
     
     def reset(self): #uudelleen aloittaa pelin häviön jälkeen
         self.game_over_state = False #poistaa häviötilan
+        self.image.fill((255, 255, 240))
         self.tile_data = Grid.randomize_grid() #uudelleen arpoo ruudukon
         self.score = 0 #nollaa pisteet
         self.set_tiles() #uudelleen luo tilet
@@ -315,4 +318,4 @@ class Grid(pygame.sprite.Sprite):
 
         if not (self.game_over_state):
             self.get_input() #hae inputteja
-            
+        
