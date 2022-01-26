@@ -11,10 +11,10 @@ class NNet():
         self.size_layer1 = size_layer1
         self.size_input = size_input
         if not(brains):
-            self.layer1_w = np.random.uniform(-0.5, 0.5, (self.size_input, self.size_layer1)) 
+            self.layer1_w = np.random.uniform(-0.5, 0.5, (self.size_input + 1, self.size_layer1)) 
             #huom ei käytetä nyt bias lol
             #huom2 tehdään eripäin ku videos koska lol
-            self.o_layer_w = np.random.uniform(-0.5, 0.5, (self.size_layer1, self.size_output)) 
+            self.o_layer_w = np.random.uniform(-0.5, 0.5, (self.size_layer1 + 1, self.size_output)) 
             #eddellee eripäin koska niin opin ja imo selkeenpää laittaa inputit selkeästi
 
         else:
@@ -27,35 +27,22 @@ class NNet():
     def neural_net(self, inputs, layers, activation_function):
         outputs = inputs #ekat outputit ovvat inputit tottakai koska niistä lähdetään
         for layer in layers: #käydään joka kerros läpi aina muokaten outputtia
-            print(outputs, layer)
-            inputs = outputs
-            #inputs = np.hstack([np.ones((outputs.shape[0],1)), outputs]) #lisätään 1 eteen ylemmän esimerkin perusteella
-            outputs = activation_function(np.matmul(inputs, layer)) #perus neuronin toiminta eli otetaan activation functio matriisiyhtälöstä
+            inputs = np.hstack([np.ones((outputs.shape[0],1)), outputs]) #lisätään 1 eteen että bias toimii
+            print(inputs, layer)
+            outputs = activation_function(inputs @ layer) #perus neuronin toiminta eli otetaan activation functio matriisiyhtälöstä
         
         return outputs
-    #turha
-    """     def get_outputs(self, inputs):
-        #tehdään muokattavampi käymällä layer kerrallaan
-        layer_1_output = self.layer(inputs, self.layer1_w, self.activation_func_sigmoid)
-        #ekan layer done(tän kaiken vois tehä loopilla ja listoilla mut en jaksa ku vidoe on tyhm)
-        final_output = self.layer(layer_1_output, self.o_layer_w, self.activation_func_sigmoid)
-        return final_output """
-    """ 
-    def layer(self, inputs, layer, activation_func):
-        #yhden kerroksen toiminta
-        #video tekee hieman tyhmästi teen vaan omaa
-        inputs = np.array(inputs)
-        outputs = inputs @ layer
-        final = activation_func(outputs)
-        return final
- """
+    
     def get_max_value(self, inputs):
         #suurin activaatio 
         outputs = self.neural_net(
             np.array([inputs]), 
-            np.array([self.layer1_w, self.o_layer_w]), 
+            [self.layer1_w, self.o_layer_w], 
             self.activation_func_sigmoid)
         return np.max(outputs), outputs
+
+
+    #modifointifunktiot alkaa
 
     def modify_weights(self): #mutate molemmat layerit käskettäessä
         NNet.mutate_array(self.layer1_w)
