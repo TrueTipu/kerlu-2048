@@ -33,6 +33,8 @@ def run_game():
 
     grid_sprites = pygame.sprite.Group() #lista grideille
     grids_lost = pygame.sprite.Group() #lista kuolleille grideille
+    grid_scores = {'A': [], 'B': [], 'A+B': [], 'B+A': [], 'M1': [], 'M2': [], 'R1': [], 'R2': []}
+    index_names = ['A','B','A+B','B+A','M1', 'M2', 'R1', 'R2']
 
     for pos in grid_poses:
         grid_sprites.add(Grid(pos[0], pos[1]))
@@ -90,8 +92,9 @@ def run_game():
         grids_lost.draw(SCREEN)
 
         if len(grids_lost) == 8: #jos kaikki on kuolut
-            for grid in grids_lost.sprites(): 
+            for i, grid in enumerate(grids_lost.sprites()): 
                 if grid.score > highest_score: highest_score = grid.score
+                grid_scores[index_names[i]].append(grid.score)
                 grid.reset() #reset kaikki
             gen += 1
             grid_sprites = pygame.sprite.Group(grids_lost.sprites()) #lisätään takaisin listaan
