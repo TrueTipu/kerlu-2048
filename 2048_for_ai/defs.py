@@ -14,7 +14,7 @@ KEY = 5829
 FONT_SIZE_1 = 70
 FONT_SIZE_2 = 30
 FONT_COLOR = (0, 0, 0)
-TEXT_OFFSET = 140
+TEXT_OFFSET = 200
 
 BC_RED_ART = 'art/bc/bc_red_transparent.png'
 

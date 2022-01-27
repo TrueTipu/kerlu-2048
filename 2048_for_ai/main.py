@@ -48,6 +48,8 @@ def run_game():
     #ai stufd begins
     gen = 0 #generaatio mis mennään
 
+    highest_score = 0
+
     #pistetään peli käyntiin
     running = True
 
@@ -85,11 +87,12 @@ def run_game():
                 grids_lost.add(grid) #lisää kuolleisiin
                 grid_sprites.remove(grid) #poistetaan elosa säästääkseen fps
 
-        print(len(grid_sprites))
         grids_lost.draw(SCREEN)
 
         if len(grids_lost) == 8: #jos kaikki on kuolut
-            for grid in grids_lost.sprites(): grid.reset() #reset kaikki
+            for grid in grids_lost.sprites(): 
+                if grid.score > highest_score: highest_score = grid.score
+                grid.reset() #reset kaikki
             gen += 1
             grid_sprites = pygame.sprite.Group(grids_lost.sprites()) #lisätään takaisin listaan
             grids_lost.empty()
@@ -100,7 +103,7 @@ def run_game():
         #piirtää otsikot niille
         display_text('FPS: ' + str(round(fps/100,1)*100), go_text_font, (WIDTH //2, 25), (0,0,0))
         display_text('GEN:' + str(gen), go_text_font, (TEXT_OFFSET, 50), (0,0,0))
-        display_text('HIGHSCORE:', go_text_font, (WIDTH - TEXT_OFFSET, 50), (0,0,0))
+        display_text(str(highest_score) +'HIGHSCORE', go_text_font, (WIDTH - TEXT_OFFSET, 50), (0,0,0))
 
 
 

@@ -27,7 +27,8 @@ class NNet():
     def neural_net(self, inputs, layers, activation_function):
         outputs = inputs #ekat outputit ovvat inputit tottakai koska niistä lähdetään
         for layer in layers: #käydään joka kerros läpi aina muokaten outputtia
-            inputs = np.hstack([np.ones((outputs.shape[0],1)), outputs]) #lisätään 1 eteen että bias toimii
+            väli = np.ones((outputs.shape[0],1))
+            inputs = np.hstack([väli, outputs]) #lisätään 1 eteen että bias toimii
             print(inputs, layer)
             outputs = activation_function(inputs @ layer) #perus neuronin toiminta eli otetaan activation functio matriisiyhtälöstä
         
@@ -36,10 +37,13 @@ class NNet():
     def get_max_value(self, inputs):
         #suurin activaatio 
         outputs = self.neural_net(
-            np.array([inputs]), 
+            np.array(inputs), 
             [self.layer1_w, self.o_layer_w], 
             self.activation_func_sigmoid)
-        return np.max(outputs), outputs
+        v = []
+        for output in outputs:
+            v.append(np.max(output))
+        return v, outputs
 
 
     #modifointifunktiot alkaa
@@ -83,11 +87,11 @@ class NNet():
 
 
 def tests():
-    nnet = NNet(16, 5, 2)
+    nnet = NNet(16, 10, 4)
     print('layer1', nnet.layer1_w)
     print('outputlayer', nnet.o_layer_w)
-
-    inputs = [0.2, 1, 2,5,3,6,3,2,66,10,22,1,21,12,53,21]
+    #HUOM ottaa vastaan myös matriisit joka nopeuttaa koodia
+    inputs = [[2, 1, 2,5,3,6,3,2,66,10,22,1,21,12,53,21], [2, 1, 2,4.12,4.75,6,3.1,25,46,10,2,1,0.123,12,53,21]]
     output = nnet.get_max_value(inputs)
     print('output',output)
 

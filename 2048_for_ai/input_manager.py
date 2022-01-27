@@ -2,7 +2,20 @@
 from grid import Grid
 
 import random
+import numpy as np
+
 class Input_Manager():
+
+    def get_neuron_input(grids: list[Grid]):
+        for grid in grids:
+            flatt = np.matrix(grid.tile_data)
+            input = np.ndarray.flatten(flatt)
+
+    def test():
+        grid = Grid(2,2)
+        grid2 = Grid(2,4)
+        grids = [grid, grid2]
+        Input_Manager.get_neuron_input(grids)
 
     def randomize_for_grids(grids: list[Grid]):
         for grid in grids:
@@ -12,3 +25,4 @@ class Input_Manager():
 
     def send_input(grid: Grid, dir: tuple):
         grid.move_manager(dir)
+Input_Manager.test()
