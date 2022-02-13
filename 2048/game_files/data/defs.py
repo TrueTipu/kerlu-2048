@@ -16,8 +16,8 @@ FONT_SIZE_2 = 50
 FONT_COLOR = (0, 0, 0)
 TEXT_OFFSET = 140
 
-BC_BLACK_ART = 'data/art/bc/bc_black_transparent.png'
-BC_YELLOW_ART = 'data/art/bc/bc_yellow_transparent.png'
+BC_BLACK_ART = 'art/bc/bc_black_transparent.png'
+BC_YELLOW_ART = 'art/bc/bc_yellow_transparent.png'
 
 GRID_SIZE = 525
 TOP_PLUS_OFFSET = 50
@@ -29,4 +29,4 @@ TILE_GAP = 25
 TILE_ANIM_LENGTH = 3
 RED_VALUE = 20
 
-SAVE_DIRECT = 'data/saves/save_data.txt'
+SAVE_DIRECT = 'saves/save_data.txt'

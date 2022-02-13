@@ -1,7 +1,7 @@
 import pygame
-from data.defs import *
-from data.tile import Tile
-from data.save_manager import Save_Manager
+from defs import *
+from tile import Tile
+from save_manager import Save_Manager
 import random
 
 #sprite class gridille (kuvana vain valkoinen tausta) joka myös hallitsee koko pelilogiikkaa
@@ -70,17 +70,6 @@ class Grid(pygame.sprite.Sprite):
                 if i == first_1 or i == first_2:
                     row[col_i] = 2
         return data #palauta randomisoitu alkutilanne
-
-    def get_score(self): #öö varmaan ihan turha
-        #en tiedä yhtään miten pythonin ja pygamen turvaluokitus käytännöt toimii
-        #tää on vaa unityssä suosittu tapa ettei suoraan katsota toisen olion dataa
-        #mahdollistaa myös jos tässä sisällä pitäis viel muokata jotain yms
-        #tällä hetkellä aivan turha
-        return self.score
-    
-    def get_high_score(self): #sama kun ylempi
-        #täysin sama kuin ylempi
-        return self.high_score
 
     def set_tiles(self): #luo uudet tilet tile_data ruudukon mukaan
         '''

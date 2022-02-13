@@ -1,8 +1,8 @@
 import pygame, sys
 import ctypes
 
-from data.defs import *
-from data.grid import Grid
+from defs import *
+from grid import Grid
 
 #pääosin pelin asetusten ja UI:n hallinnointia, sisältää peli logiikan häviö ja voitto screenille(koska UI) muttei paljon muuta
 def run_game(): 
@@ -67,8 +67,8 @@ def run_game():
         grid_sprite.update(SCREEN)
 
         #piirtää scoren ja highscoren
-        display_text(str(grid.get_score()), text_font, (TEXT_OFFSET, 100), (0,0,0))
-        display_text(str(grid.get_high_score()), text_font, (WIDTH - TEXT_OFFSET, 100), (0,0,0))
+        display_text(str(grid.score), text_font, (TEXT_OFFSET, 100), (0,0,0))
+        display_text(str(grid.high_score), text_font, (WIDTH - TEXT_OFFSET, 100), (0,0,0))
         #piirtää otsikot niille
         display_text('SCORE:', go_text_font, (TEXT_OFFSET, 50), (0,0,0))
         display_text('HIGHSCORE:', go_text_font, (WIDTH - TEXT_OFFSET, 50), (0,0,0))

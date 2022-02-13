@@ -1,5 +1,5 @@
 import json
-from data.defs import *
+from defs import *
 import random
 
 #hallitsee high scoren tallentamisen, oikeastaan ei kovin olellista pelin kannalta mutta haluisn opetella miten tallennus toimisi
